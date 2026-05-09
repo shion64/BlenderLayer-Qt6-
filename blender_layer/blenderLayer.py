@@ -1,11 +1,11 @@
 import sys, math, threading
 from krita import *
 
-from PyQt5.QtCore import Qt, QThreadPool
+from PyQt6.QtCore import Qt, QThreadPool
 from os import path
 from functools import partial
 from types import SimpleNamespace
-from PyQt5.QtWidgets import (
+from PyQt6.QtWidgets import (
     QPushButton,
     QStatusBar,
     QLabel,
@@ -57,9 +57,9 @@ class BlenderLayer(DockWidget):
         scroll = QScrollArea()
         scroll.setWidget(scrollContainer)
         scroll.setWidgetResizable(True)
-        scroll.setFrameShape(QFrame.NoFrame)
-        scroll.setFrameShadow(QFrame.Plain)
-        scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        scroll.setFrameShape(QFrame.Shape.NoFrame)
+        scroll.setFrameShadow(QFrame.Shadow.Plain)
+        scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
 
         updateProgress = QProgressBar()
         updateProgress.hide()
@@ -92,9 +92,9 @@ class BlenderLayer(DockWidget):
         viewLabel = QLabel(i18n("Mode")) 
         viewComboBox = QComboBox()
         viewComboBox.addItems([i18n("Current view"), i18n("Camera"), i18n("Render result")])
-        viewComboBox.setItemData(0, i18n("Show view as seen in the active 3D View"), QtCore.Qt.ToolTipRole)
-        viewComboBox.setItemData(1, i18n("Show view from the active camera"), QtCore.Qt.ToolTipRole)
-        viewComboBox.setItemData(2, i18n("Render and show result"), QtCore.Qt.ToolTipRole)
+        viewComboBox.setItemData(0, i18n("Show view as seen in the active 3D View"), QtCore.Qt.ItemDataRole.ToolTipRole)
+        viewComboBox.setItemData(1, i18n("Show view from the active camera"), QtCore.Qt.ItemDataRole.ToolTipRole)
+        viewComboBox.setItemData(2, i18n("Render and show result"), QtCore.Qt.ItemDataRole.ToolTipRole)
         viewComboBox.setToolTip(i18n("Select view mode"))
 
         viewHBoxLayout.addWidget(viewLabel)
@@ -130,8 +130,8 @@ class BlenderLayer(DockWidget):
         renderOverrideVBoxLayout.addWidget(renderTemporaryCheck)
 
         line0 = QFrame()
-        line0.setFrameShape(QFrame.HLine)
-        line0.setFrameShadow(QFrame.Sunken)
+        line0.setFrameShape(QFrame.Shape.HLine)
+        line0.setFrameShadow(QFrame.Shadow.Sunken)
         
         renderHBoxLayout = QHBoxLayout()
         renderButton = QPushButton(i18n("Render"))
@@ -156,7 +156,7 @@ class BlenderLayer(DockWidget):
         viewGrid = QGridLayout()
 
         rollLabel = QLabel(i18n("Roll")) 
-        rollSlider = QSlider(Qt.Horizontal)
+        rollSlider = QSlider(Qt.Orientation.Horizontal)
         rollSlider.setRange(-1800, 1800)
         rollSpinBox = QDoubleSpinBox()
         rollSpinBox.setRange(-180, 180)
@@ -165,7 +165,7 @@ class BlenderLayer(DockWidget):
         rollSpinBox.valueChanged.connect(partial(self.changeSlider,rollSlider))
         
         lensLabel = QLabel(i18n("Focal Length")) 
-        lensSlider = QSlider(Qt.Horizontal)
+        lensSlider = QSlider(Qt.Orientation.Horizontal)
         lensSlider.setRange(10, 2500)
         lensSlider.setValue(500)
         lensSpinBox = QDoubleSpinBox()
@@ -188,8 +188,8 @@ class BlenderLayer(DockWidget):
         lensZoomCheck.setToolTip(i18n("Adjust camera zoom such that when changing the focal length\nan object in the center approximately stays the same size"))
 
         line1 = QFrame()
-        line1.setFrameShape(QFrame.HLine)
-        line1.setFrameShadow(QFrame.Sunken)
+        line1.setFrameShape(QFrame.Shape.HLine)
+        line1.setFrameShadow(QFrame.Shadow.Sunken)
     
         cyclesWarning = QLabel('<i>'+i18n("Cycles is only supported in render result mode") + '</i>')
         cyclesWarning.setWordWrap(True)
@@ -216,8 +216,8 @@ class BlenderLayer(DockWidget):
         manualWarning.hide()
         
         line2 = QFrame()
-        line2.setFrameShape(QFrame.HLine)
-        line2.setFrameShadow(QFrame.Sunken)
+        line2.setFrameShape(QFrame.Shape.HLine)
+        line2.setFrameShadow(QFrame.Shadow.Sunken)
         
         assistantsButton = QPushButton(i18n("Create Assistant Set"))
         assistantsButton.setToolTip(i18n("Create drawing assistants matching the current view.\nThis will create an xml file which has to be loaded from the tool settings of the assistants tool.\n(Tool Settings → Load Assistant Set Button)"))
@@ -239,9 +239,9 @@ class BlenderLayer(DockWidget):
         updateComboBox = QComboBox()
         updateComboBox.addItems([i18n("Live"), i18n("Auto"), i18n("Manual")])
         updateComboBox.setCurrentIndex(1)
-        updateComboBox.setItemData(0, i18n("Periodically update even when Krita is not in focus"), QtCore.Qt.ToolTipRole)
-        updateComboBox.setItemData(1, i18n("Only update when settings change or Krita regains focus\n(Recommended)"), QtCore.Qt.ToolTipRole)
-        updateComboBox.setItemData(2, i18n("Only update when the update button is pressed\n(Recommended for large resolutions)"), QtCore.Qt.ToolTipRole)
+        updateComboBox.setItemData(0, i18n("Periodically update even when Krita is not in focus"), QtCore.Qt.ItemDataRole.ToolTipRole)
+        updateComboBox.setItemData(1, i18n("Only update when settings change or Krita regains focus\n(Recommended)"), QtCore.Qt.ItemDataRole.ToolTipRole)
+        updateComboBox.setItemData(2, i18n("Only update when the update button is pressed\n(Recommended for large resolutions)"), QtCore.Qt.ItemDataRole.ToolTipRole)
         updateComboBox.setToolTip(i18n("Select when to update the view"))
        
         updateHBoxLayout.addWidget(updateLabel)
@@ -263,8 +263,8 @@ class BlenderLayer(DockWidget):
         updateForm.addRow(updateResLabel, updateResComboBox)
 
         line3 = QFrame()
-        line3.setFrameShape(QFrame.HLine)
-        line3.setFrameShadow(QFrame.Sunken)
+        line3.setFrameShape(QFrame.Shape.HLine)
+        line3.setFrameShadow(QFrame.Shadow.Sunken)
         
         updateButtonsHBoxLayout = QHBoxLayout()
         updateButton = QPushButton(i18n("Update"))  
@@ -338,8 +338,8 @@ class BlenderLayer(DockWidget):
         libraryHBoxLayout.addWidget(libraryAppendButton)
 
         line4 = QFrame()
-        line4.setFrameShape(QFrame.HLine)
-        line4.setFrameShadow(QFrame.Sunken)
+        line4.setFrameShape(QFrame.Shape.HLine)
+        line4.setFrameShadow(QFrame.Shadow.Sunken)
         
         poseLabel = QLabel(i18n("Apply to:"))
         
@@ -349,14 +349,14 @@ class BlenderLayer(DockWidget):
         poseComboBox.setToolTip(i18n("The armature which the pose will be applied to"))
 
         poseList = QListWidget()
-        poseList.setFlow(QListWidget.LeftToRight)
-        poseList.setHorizontalScrollMode(QListWidget.ScrollPerPixel)
-        poseList.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        poseList.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
+        poseList.setFlow(QListWidget.Flow.LeftToRight)
+        poseList.setHorizontalScrollMode(QAbstractItemView.ScrollMode.ScrollPerPixel)
+        poseList.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        poseList.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOn)
         poseList.setMinimumHeight(190)
         poseList.setMaximumHeight(190)
         poseList.setSpacing(0)
-        poseList.setSelectionMode(QAbstractItemView.NoSelection)
+        poseList.setSelectionMode(QAbstractItemView.SelectionMode.NoSelection)
         poseList.setToolTip(i18n("Pose library assets.\nDouble click to apply"))
 
         libraryFormLayout.addRow(i18n("Add to scene:"), libraryHBoxLayout)
@@ -501,22 +501,22 @@ class BlenderLayer(DockWidget):
         self.uiContainer.setEnabled(canvas != None and instance.activeDocument() != None and instance.activeDocument().rootNode() != None)
           
     def eventFilter(self, source, event):
-        if event.type() == QEvent.MouseButtonPress and event.buttons() == Qt.MidButton and (event.modifiers() & Qt.AltModifier) == Qt.AltModifier and self.settings.navigateAlt and self.navigate and self.navigate.isEnabled() and self.settings.viewMode == 0:
+        if event.type() == QEvent.Type.MouseButtonPress and event.buttons() == Qt.MouseButton.MiddleButton and (event.modifiers() & Qt.KeyboardModifier.AltModifier) == Qt.KeyboardModifier.AltModifier and self.settings.navigateAlt and self.navigate and self.navigate.isEnabled() and self.settings.viewMode == 0:
             self.navigate.mousePressEvent(event, True)
             return True
-        elif event.type() == QEvent.MouseMove and event.buttons() == Qt.MidButton and (event.modifiers() & Qt.AltModifier) == Qt.AltModifier and self.settings.navigateAlt and self.navigate and self.navigate.isEnabled() and self.settings.viewMode == 0:
+        elif event.type() == QEvent.Type.MouseMove and event.buttons() == Qt.MouseButton.MiddleButton and (event.modifiers() & Qt.KeyboardModifier.AltModifier) == Qt.KeyboardModifier.AltModifier and self.settings.navigateAlt and self.navigate and self.navigate.isEnabled() and self.settings.viewMode == 0:
             self.navigate.mouseMoveEvent(event)
             return True
-        elif event.type() == QEvent.Wheel and (event.modifiers() & Qt.AltModifier) == Qt.AltModifier and self.settings.navigateAlt and self.navigate and self.navigate.isEnabled() and self.settings.viewMode == 0:
+        elif event.type() == QEvent.Type.Wheel and (event.modifiers() & Qt.KeyboardModifier.AltModifier) == Qt.KeyboardModifier.AltModifier and self.settings.navigateAlt and self.navigate and self.navigate.isEnabled() and self.settings.viewMode == 0:
             self.navigate.wheelEvent(event)
             return True
-        elif event.type() == QEvent.Drop and self.uiContainer.isEnabled() and event.mimeData().hasUrls() and any(u.toLocalFile().endswith('.blend') for u in event.mimeData().urls()):
+        elif event.type() == QEvent.Type.Drop and self.uiContainer.isEnabled() and event.mimeData().hasUrls() and any(u.toLocalFile().endswith('.blend') for u in event.mimeData().urls()):
             self.dropEvent(event)
             self.setVisible(True)
             return True
-        elif type(source) == QMainWindow and event.type() == QEvent.WindowActivate and self.settings.updateMode == 1 and self.server and self.server.running:
+        elif type(source) == QMainWindow and event.type() == QEvent.Type.WindowActivate and self.settings.updateMode == 1 and self.server and self.server.running:
             self.server.sendMessage(('requestFrame', True))
-        elif (event.type() == QEvent.ContextMenu and source is self.poseList):
+        elif (event.type() == QEvent.Type.ContextMenu and source is self.poseList):
             menu = QtWidgets.QMenu()
             menu.addAction(i18n("Apply Pose"))
             flipped = menu.addAction(i18n("Apply Flipped"))
@@ -559,8 +559,8 @@ class BlenderLayer(DockWidget):
         dialog = QDialog(Application.activeWindow().qwindow())
         dialog.setWindowTitle(i18n("Blender Layer Settings"))
         buttonBox = QDialogButtonBox()
-        buttonBox.setOrientation(QtCore.Qt.Horizontal)
-        buttonBox.setStandardButtons(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
+        buttonBox.setOrientation(QtCore.Qt.Orientation.Horizontal)
+        buttonBox.setStandardButtons(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
         buttonBox.accepted.connect(dialog.accept)
         buttonBox.rejected.connect(dialog.reject)
         
@@ -570,8 +570,8 @@ class BlenderLayer(DockWidget):
         blenderPathInput.setToolTip(i18n("Path to the Blender executable"))
 
         def browseBlenderPath():
-            dialog = QFileDialog(self, i18n("Open Blender executable"), self.settings.blenderPath if os.path.isfile(self.settings.blenderPath) else QStandardPaths.writableLocation(QStandardPaths.ApplicationsLocation))   
-            if dialog.exec_() == QDialog.Accepted:
+            dialog = QFileDialog(self, i18n("Open Blender executable"), self.settings.blenderPath if os.path.isfile(self.settings.blenderPath) else QStandardPaths.writableLocation(QStandardPaths.StandardLocation.ApplicationsLocation))   
+            if dialog.exec() == QDialog.DialogCode.Accepted:
                 self.settings.blenderPath = dialog.selectedUrls()[0].toLocalFile()   
             blenderPathInput.setText(self.settings.blenderPath)
             
@@ -627,16 +627,16 @@ class BlenderLayer(DockWidget):
         form.addRow(navigateAltCheckBox)
 
         line = QFrame()
-        line.setFrameShape(QFrame.HLine)
-        line.setFrameShadow(QFrame.Sunken)
+        line.setFrameShape(QFrame.Shape.HLine)
+        line.setFrameShadow(QFrame.Shadow.Sunken)
         
         libraryGroupBox = QGroupBox(i18n("Library"))
         
         libraryTable = QTableWidget(len(self.settings.library), 3)
         libraryTable.setHorizontalHeaderLabels([i18n("Name"), i18n("Path to .blend File"), i18n("Objects to append")])
-        libraryTable.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        libraryTable.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
         libraryTable.verticalHeader().setVisible(False)
-        libraryTable.setSelectionMode(QAbstractItemView.NoSelection)
+        libraryTable.setSelectionMode(QAbstractItemView.SelectionMode.NoSelection)
         libraryTable.setMinimumHeight(190)
         
         row = 0
@@ -650,8 +650,8 @@ class BlenderLayer(DockWidget):
             row = libraryTable.rowCount() if libraryTable.currentRow() < 0 else libraryTable.currentRow()
             lastItem = libraryTable.item(row, 0)
             lastPath = lastItem.text() if lastItem else ''
-            dialog = QFileDialog(self, i18n("Open .blend file"), lastPath if os.path.isfile(lastPath) else QStandardPaths.writableLocation(QStandardPaths.PicturesLocation))   
-            if dialog.exec_() == QDialog.Accepted:
+            dialog = QFileDialog(self, i18n("Open .blend file"), lastPath if os.path.isfile(lastPath) else QStandardPaths.writableLocation(QStandardPaths.StandardLocation.PicturesLocation))   
+            if dialog.exec() == QDialog.DialogCode.Accepted:
                 row = libraryTable.rowCount() if libraryTable.currentRow() < 0 else libraryTable.currentRow() + 1
                 for file in dialog.selectedUrls():
                     file = file.toLocalFile()                  
@@ -662,7 +662,7 @@ class BlenderLayer(DockWidget):
                     row = row + 1
 
         creditLabel = QLabel("Body-chan models CC-0 by " + '<a href=\"https://blendswap.com/blend/23521\">vinchau</a>')
-        creditLabel.setTextInteractionFlags(Qt.TextBrowserInteraction);
+        creditLabel.setTextInteractionFlags(Qt.TextInteractionFlag.TextBrowserInteraction);
         creditLabel.setOpenExternalLinks(True);
         addButton = QToolButton()
         addButton.setIcon(instance.icon('addlayer'))
@@ -781,9 +781,9 @@ class BlenderLayer(DockWidget):
         scroll = QScrollArea()
         scroll.setWidget(scrollContainer)
         scroll.setWidgetResizable(True)
-        scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        scroll.setFrameShape(QFrame.NoFrame)
-        scroll.setFrameShadow(QFrame.Plain)
+        scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        scroll.setFrameShape(QFrame.Shape.NoFrame)
+        scroll.setFrameShadow(QFrame.Shadow.Plain)
         scroll.setMinimumWidth(scrollContainer.minimumSizeHint().width() + scroll.verticalScrollBar().minimumSizeHint().width() + 22)
 
         dialogVbox = QVBoxLayout(dialog)
@@ -791,7 +791,7 @@ class BlenderLayer(DockWidget):
         dialogVbox.addWidget(buttonBox)
         dialog.show()
         dialog.activateWindow()
-        if dialog.exec_() == QDialog.Accepted:
+        if dialog.exec() == QDialog.DialogCode.Accepted:
             lib = []
             for row in range(0, libraryTable.rowCount()):
                 name = libraryTable.item(row, 0).text()
@@ -838,8 +838,8 @@ class BlenderLayer(DockWidget):
             
             if not self.settings.blenderPath:
                 if dialog:
-                    dialog = QFileDialog(self, i18n("Open blender executable"), QStandardPaths.writableLocation(QStandardPaths.ApplicationsLocation))
-                    if dialog.exec_() == QDialog.Accepted:
+                    dialog = QFileDialog(self, i18n("Open blender executable"), QStandardPaths.writableLocation(QStandardPaths.StandardLocation.ApplicationsLocation))
+                    if dialog.exec() == QDialog.DialogCode.Accepted:
                         self.settings.blenderPath = dialog.selectedUrls()[0].toLocalFile()   
                         self.writeSettings()
             else:
@@ -1015,7 +1015,7 @@ class BlenderLayer(DockWidget):
         self.activeDocument.refreshProjection()
                 
     def createAssistants(self):
-        (fileName, mime) = QFileDialog.getSaveFileName(self, i18n("Save File"), os.path.join(QStandardPaths.writableLocation(QStandardPaths.PicturesLocation), 'blenderlayer.paintingassistant'), i18n("Krita Assistant (*.paintingassistant)"))
+        (fileName, mime) = QFileDialog.getSaveFileName(self, i18n("Save File"), os.path.join(QStandardPaths.writableLocation(QStandardPaths.StandardLocation.PicturesLocation), 'blenderlayer.paintingassistant'), i18n("Krita Assistant (*.paintingassistant)"))
         if fileName:
             instance.action('KisAssistantTool').trigger()
             d = self.activeDocument if self.activeDocument else instance.activeDocument()
@@ -1130,21 +1130,21 @@ class BlenderLayer(DockWidget):
             layout = QVBoxLayout()
             layout.setContentsMargins(0, 0, 0, 11)
             image = QLabel()
-            image.setAlignment(Qt.AlignCenter)
+            image.setAlignment(Qt.AlignmentFlag.AlignCenter)
             if pixels:
-                image.setPixmap(QPixmap.fromImage(QImage(pixels, 128, 128, QImage.Format_RGBA8888)))
+                image.setPixmap(QPixmap.fromImage(QImage(pixels, 128, 128, 128 * 4, QImage.Format.Format_RGBA8888)))
                 image.setMinimumWidth(128)
             else:
                 icon = instance.icon('folder-pictures')
                 image.setPixmap(icon.pixmap(icon.actualSize(QSize(64, 64))))
                 image.setMinimumWidth(128)
             text = QLabel(name)
-            text.setAlignment(Qt.AlignCenter)
+            text.setAlignment(Qt.AlignmentFlag.AlignCenter)
             layout.addStretch()
             layout.addWidget(image)
             layout.addStretch()
             layout.addWidget(text)
-            #layout.setSizeConstraint(QLayout.SetFixedSize)
+            #layout.setSizeConstraint(QLayout.SizeConstraint.SetFixedSize)
             widget.setLayout(layout)
             item = QListWidgetItem()
             item.setSizeHint(widget.sizeHint())    
@@ -1157,7 +1157,7 @@ class BlenderLayer(DockWidget):
             try:
                 i = self.settings.poseLib.index(name)
                 widget = self.poseList.itemWidget(self.poseList.item(i)).layout().itemAt(1).widget()
-                widget.setPixmap(QPixmap.fromImage(QImage(pixels, 128, 128, QImage.Format_RGBA8888)))          
+                widget.setPixmap(QPixmap.fromImage(QImage(pixels, 128, 128, 128 * 4, QImage.Format.Format_RGBA8888)))          
             except ValueError as e:
                 print(e)
             
@@ -1229,8 +1229,8 @@ class BlenderLayer(DockWidget):
         dialog = QDialog(Application.activeWindow().qwindow())
         dialog.setWindowTitle(i18n("Render Animation") if render else i18n("Update Animation"))
         buttonBox = QDialogButtonBox()
-        buttonBox.setOrientation(QtCore.Qt.Horizontal)
-        buttonBox.setStandardButtons(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
+        buttonBox.setOrientation(QtCore.Qt.Orientation.Horizontal)
+        buttonBox.setStandardButtons(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
         buttonBox.accepted.connect(dialog.accept)
         buttonBox.rejected.connect(dialog.reject)
         
@@ -1276,10 +1276,10 @@ class BlenderLayer(DockWidget):
         vbox.addWidget(overrideKritaCheck)
         vbox.addStretch(1)
         vbox.addWidget(buttonBox)
-        vbox.setSizeConstraint(QLayout.SetFixedSize)
+        vbox.setSizeConstraint(QLayout.SizeConstraint.SetFixedSize)
         dialog.show()
         dialog.activateWindow()
-        if dialog.exec_() == QDialog.Accepted:
+        if dialog.exec() == QDialog.DialogCode.Accepted:
             self.update.setCurrentIndex(2)
             if render:
                 self.server.sendMessage(('renderAnimation', self.renderOverride.isChecked(), self.renderTemporary.isChecked(), self.renderOverridePath.isChecked(), self.settings.renderPath, self.renderOverrideRes.isChecked(), self.renderTransparency.isChecked(),

@@ -312,7 +312,9 @@ class BlenderLayerClient():
             self.sendMessage(('poselib', poselib, clear))
         
     def getPosePreview(self, action):
-        return np.array(action.preview.image_pixels, copy=False).ravel(order = 'F').reshape(128, 128)[::-1,:].ravel().tobytes()
+        arr = np.asarray(action.preview.image_pixels, dtype=np.int32).view(np.uint8)
+        arr = arr.reshape(128, 128, 4)[::-1,:,:]
+        return arr.ravel().tobytes()
         
     def sendMessage(self, msg):
         self.sendQueue.put(msg)
@@ -485,7 +487,7 @@ class BlenderLayerClient():
                     self.sendMessage(('posePreviews', previews))
                 elif type == 'append':
                     objects = msg[3].split(';')
-                    bpy.ops.object.mode_set(mode='OBJECT', toggle=False)
+                    bpy.ops.object.mode_set(mode='OBJECT', toggle=False) if bpy.context.active_object else None
 
                     for obj in objects:
                         path = os.path.join(msg[2], obj)
@@ -753,7 +755,7 @@ class BlenderLayerClient():
                     h = self.regionHeight // scale
                     w = self.regionWidth // scale
                     if len(self.buf) == h and len(self.buf[0]) == w:
-                        b = np.array(self.buf, copy=False, dtype=self.dtype).ravel(order = 'F')
+                        b = np.asarray(self.buf, dtype=self.dtype).ravel(order = 'F')
                         if self.bgrConversion:
                             b = b.reshape(h, w, 4)[::-1,:,[2, 1, 0, 3]]
                         else:
