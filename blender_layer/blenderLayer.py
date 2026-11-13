@@ -18,6 +18,10 @@ from PyQt6.QtWidgets import (
     QFrame,
     QScrollArea
 )
+import os
+from PyQt6.QtCore import QEvent, QSize, QStandardPaths
+from PyQt6.QtGui import QPixmap, QImage, QIcon
+from PyQt6.QtWidgets import QApplication, QMainWindow, QMenu, QDialog, QDialogButtonBox, QFileDialog, QDoubleSpinBox, QComboBox, QCheckBox, QSlider, QListWidget, QListWidgetItem
 from .navigateWidget import NavigateWidget
 from .blenderLayerServer import BlenderLayerServer, BlenderRunnable
 
@@ -92,9 +96,9 @@ class BlenderLayer(DockWidget):
         viewLabel = QLabel(i18n("Mode")) 
         viewComboBox = QComboBox()
         viewComboBox.addItems([i18n("Current view"), i18n("Camera"), i18n("Render result")])
-        viewComboBox.setItemData(0, i18n("Show view as seen in the active 3D View"), QtCore.Qt.ItemDataRole.ToolTipRole)
-        viewComboBox.setItemData(1, i18n("Show view from the active camera"), QtCore.Qt.ItemDataRole.ToolTipRole)
-        viewComboBox.setItemData(2, i18n("Render and show result"), QtCore.Qt.ItemDataRole.ToolTipRole)
+        viewComboBox.setItemData(0, i18n("Show view as seen in the active 3D View"), Qt.ItemDataRole.ToolTipRole)
+        viewComboBox.setItemData(1, i18n("Show view from the active camera"), Qt.ItemDataRole.ToolTipRole)
+        viewComboBox.setItemData(2, i18n("Render and show result"), Qt.ItemDataRole.ToolTipRole)
         viewComboBox.setToolTip(i18n("Select view mode"))
 
         viewHBoxLayout.addWidget(viewLabel)
@@ -239,9 +243,9 @@ class BlenderLayer(DockWidget):
         updateComboBox = QComboBox()
         updateComboBox.addItems([i18n("Live"), i18n("Auto"), i18n("Manual")])
         updateComboBox.setCurrentIndex(1)
-        updateComboBox.setItemData(0, i18n("Periodically update even when Krita is not in focus"), QtCore.Qt.ItemDataRole.ToolTipRole)
-        updateComboBox.setItemData(1, i18n("Only update when settings change or Krita regains focus\n(Recommended)"), QtCore.Qt.ItemDataRole.ToolTipRole)
-        updateComboBox.setItemData(2, i18n("Only update when the update button is pressed\n(Recommended for large resolutions)"), QtCore.Qt.ItemDataRole.ToolTipRole)
+        updateComboBox.setItemData(0, i18n("Periodically update even when Krita is not in focus"), Qt.ItemDataRole.ToolTipRole)
+        updateComboBox.setItemData(1, i18n("Only update when settings change or Krita regains focus\n(Recommended)"), Qt.ItemDataRole.ToolTipRole)
+        updateComboBox.setItemData(2, i18n("Only update when the update button is pressed\n(Recommended for large resolutions)"), Qt.ItemDataRole.ToolTipRole)
         updateComboBox.setToolTip(i18n("Select when to update the view"))
        
         updateHBoxLayout.addWidget(updateLabel)
@@ -517,10 +521,10 @@ class BlenderLayer(DockWidget):
         elif type(source) == QMainWindow and event.type() == QEvent.Type.WindowActivate and self.settings.updateMode == 1 and self.server and self.server.running:
             self.server.sendMessage(('requestFrame', True))
         elif (event.type() == QEvent.Type.ContextMenu and source is self.poseList):
-            menu = QtWidgets.QMenu()
+            menu = QMenu()
             menu.addAction(i18n("Apply Pose"))
             flipped = menu.addAction(i18n("Apply Flipped"))
-            action = menu.exec_(event.globalPos())
+            action = menu.exec(event.globalPos())
             if action:
                 item = source.itemAt(event.pos())
                 self.applyPose(item, action == flipped)
@@ -559,7 +563,7 @@ class BlenderLayer(DockWidget):
         dialog = QDialog(Application.activeWindow().qwindow())
         dialog.setWindowTitle(i18n("Blender Layer Settings"))
         buttonBox = QDialogButtonBox()
-        buttonBox.setOrientation(QtCore.Qt.Orientation.Horizontal)
+        buttonBox.setOrientation(Qt.Orientation.Horizontal)
         buttonBox.setStandardButtons(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
         buttonBox.accepted.connect(dialog.accept)
         buttonBox.rejected.connect(dialog.reject)
@@ -1229,7 +1233,7 @@ class BlenderLayer(DockWidget):
         dialog = QDialog(Application.activeWindow().qwindow())
         dialog.setWindowTitle(i18n("Render Animation") if render else i18n("Update Animation"))
         buttonBox = QDialogButtonBox()
-        buttonBox.setOrientation(QtCore.Qt.Orientation.Horizontal)
+        buttonBox.setOrientation(Qt.Orientation.Horizontal)
         buttonBox.setStandardButtons(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
         buttonBox.accepted.connect(dialog.accept)
         buttonBox.rejected.connect(dialog.reject)

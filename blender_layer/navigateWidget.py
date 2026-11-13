@@ -1,4 +1,5 @@
 from PyQt6.QtCore import QRunnable, Qt, pyqtSignal, QSize, QPointF, QRectF
+from krita import Krita
 from PyQt6.QtGui import QPainter, QBrush, QColor, QIcon, QPalette, QCursor
 import sys, math
 from PyQt6.QtWidgets import (
