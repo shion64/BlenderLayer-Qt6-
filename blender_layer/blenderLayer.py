@@ -830,10 +830,10 @@ class BlenderLayer(DockWidget):
                 if p and os.path.isfile(p):
                     self.settings.blenderPath = p
                     
-                elif os.path.isdir('C:\Program Files\Blender Foundation'):
-                    versions = sorted(os.listdir('C:\Program Files\Blender Foundation'), reverse=True)
+                elif os.path.isdir(r'C:\Program Files\Blender Foundation'):
+                    versions = sorted(os.listdir(r'C:\Program Files\Blender Foundation'), reverse=True)
                     for ver in versions:
-                        p = os.path.join('C:\Program Files\Blender Foundation', ver, 'blender.exe')
+                        p = os.path.join(r'C:\Program Files\Blender Foundation', ver, 'blender.exe')
                         if os.path.isfile(p):
                             self.settings.blenderPath = p
                             break
