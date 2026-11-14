@@ -755,7 +755,7 @@ class BlenderLayerClient():
                     h = self.regionHeight // scale
                     w = self.regionWidth // scale
                     if len(self.buf) == h and len(self.buf[0]) == w:
-                        b = np.asarray(self.buf, dtype=self.dtype).ravel(order = 'F')
+                        b = np.asarray(self.buf, dtype=self.dtype); b = b if b.shape == (h, w, 4) else b.ravel(order = 'F')
                         if self.bgrConversion:
                             b = b.reshape(h, w, 4)[::-1,:,[2, 1, 0, 3]]
                         else:
