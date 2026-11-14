@@ -22,6 +22,7 @@ import os
 from PyQt6.QtCore import QEvent, QSize, QStandardPaths
 from PyQt6.QtGui import QPixmap, QImage, QIcon
 from PyQt6.QtWidgets import QApplication, QMainWindow, QMenu, QDialog, QDialogButtonBox, QFileDialog, QDoubleSpinBox, QComboBox, QCheckBox, QSlider, QListWidget, QListWidgetItem
+from PyQt6.QtWidgets import QAbstractSlider, QAbstractSpinBox, QScrollArea, QComboBox
 from .navigateWidget import NavigateWidget
 from .blenderLayerServer import BlenderLayerServer, BlenderRunnable
 
@@ -505,6 +506,14 @@ class BlenderLayer(DockWidget):
         self.uiContainer.setEnabled(canvas != None and instance.activeDocument() != None and instance.activeDocument().rootNode() != None)
           
     def eventFilter(self, source, event):
+        if event.type() == QEvent.Type.Wheel and isinstance(source, (QComboBox, QAbstractSlider, QAbstractSpinBox)) and self.isAncestorOf(source) and (event.modifiers() & (Qt.KeyboardModifier.ShiftModifier | Qt.KeyboardModifier.AltModifier)) == Qt.KeyboardModifier.NoModifier:
+            area = source.parentWidget()
+            while area is not None and not isinstance(area, QScrollArea):
+                area = area.parentWidget()
+            if area is not None:
+                bar = area.verticalScrollBar()
+                bar.setValue(bar.value() - round(event.angleDelta().y() / 120 * bar.singleStep() * 3))
+            return True
         if event.type() == QEvent.Type.MouseButtonPress and event.buttons() == Qt.MouseButton.MiddleButton and (event.modifiers() & Qt.KeyboardModifier.AltModifier) == Qt.KeyboardModifier.AltModifier and self.settings.navigateAlt and self.navigate and self.navigate.isEnabled() and self.settings.viewMode == 0:
             self.navigate.mousePressEvent(event, True)
             return True
